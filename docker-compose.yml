@@ -1,0 +1,57 @@
+version: '2'
+services:
+  #  docker run -dit --name wjr-data -v /mount/wjr:/var/www/html/mount php:7.2-apache
+  wjr-data:
+    image: php:7.2-apache
+    volumes:
+      - /mount/wjr:/var/www/html/mount
+
+  # Verify that realtime.txt can be found in the /var/www/html/mount directory 
+  # docker-compose exec chw.com-app /bin/bash
+  nw.com-app:
+    build:
+      context: https://github.com/jkozik/InstallNw.com.git
+    ports:
+      - "8082:80"
+    #volumes:
+      #- /mount/wjr:/var/www/html/mount
+    volumes_from:
+      - wjr-data
+
+  nw.net-app:
+    build:
+      context: https://github.com/jkozik/InstallNw.net.git
+    ports:
+      - "8081:80"
+    #volumes:
+      #- /mount/wrj:/var/www/html/mount
+    volumes_from:
+      - wjr-data
+
+  # docker run -dit --name chw.com-app -p 8083:80 --volumes-from weather-data jkozik/chw.com
+  weather-data:
+    image: php:7.2-apache
+    volumes:
+      - /mount/weather:/var/www/html/mount
+
+  chw.com-app:
+    build:
+      context: https://github.com/jkozik/InstallCHW.com.git
+    ports:
+      - "8083:80"
+    volumes_from:
+      - weather-data
+
+
+# Verify that realtime.txt can be found in the containers created above
+# For nw.com-app, nw.net-app, chw.com-app exec a bash shell as follows
+# docker-compose exec XXX-app /bin/bash
+# for each container, the file is found in a slightly different spot
+
+# for log files:
+# docker-compose logs -f
+# docker-compose logs -f xxx-app
+
+# other commands
+# docker-compose ps
+# docker-compose stop xxx-app
