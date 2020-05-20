@@ -42,6 +42,16 @@ services:
     volumes_from:
       - weather-data
 
+  chw.net-app:
+    build:
+      context: https://github.com/jkozik/InstallCHW.net.git
+    ports:
+      - "8084:80"
+    #volumes:
+      #- /mount/weather:/var/www/html/mount
+    volumes_from:
+      - weather-data
+
 
 # Verify that realtime.txt can be found in the containers created above
 # For nw.com-app, nw.net-app, chw.com-app exec a bash shell as follows
